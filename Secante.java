@@ -2,9 +2,10 @@ public class Secante {
     // Atributos
     double x1; // Límite inferior de la busqueda
     double x2; // Límite superior de la busqueda
-    double error; // Error tolerado para el cálculo
+    static double error; // Error tolerado para el cálculo
     int calculos; // Número de cálculos límite
     static int calculoActual = 0; // Cálculo en el que se encuentra actualmente
+    static double calculoError = error + 1;
     
         // Constructores
         public Secante(double x1, double x2, double error, int calculos) {
@@ -53,12 +54,17 @@ public class Secante {
             u = ((10*x3)/9) - 1;
             double fx3 = Math.asin(u) + u*(Math.sqrt(1 - Math.pow(u, 2))) - 1.100144;
             arreglo[6] = fx3;
+
+            // Configurar todo para la siguiente iteración
+            x1 = x2;
+            x2 = x3;
+            calculoError = fx3;
     
             // Regresar arreglo
             return arreglo;
         }
     
-        public static void printLine(double[] r) {
+        public void printLine(double[] r) {
             String x1 = truncar(r[1], 6);
             String fx1 = truncar(r[2], 9);
             String x2 = truncar(r[3], 9);
@@ -66,13 +72,18 @@ public class Secante {
             String x3 = truncar(r[5], 9);
             String fx3 = truncar(r[6], 9);
 
-            String linea = String.format("│%2d│%10s│%10s│%10s│%10s│%10s│%10s│",
-                calculoActual, x1, fx1, x2, fx2, x3, fx3);
+            String linea = String.format("│%2d│%10s│%10s│%10s│%10s│%10s│%10e│",
+                calculoActual, x1, fx1, x2, fx2, x3, r[6]);
             System.out.println(linea);
     }
 
     public static String truncar(double valor, int limite) {
+        System.out.println(calculoError);
         String res = String.valueOf(valor);
         return res.substring(0, Math.min(limite, res.length()));
+    }
+
+    public boolean calcularError() {
+        return Math.abs(calculoError) >= error;
     }
 }

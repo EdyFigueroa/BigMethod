@@ -86,10 +86,12 @@ public class BigMethod {
         System.out.println("├──┼──────────┼──────────┼──────────┼──────────┼──────────┼──────────┤");
 
         Secante secante = new Secante(0.1, 0.6, 0.00001, 40);
-        double[] resultados = secante.nextCalc();
 
-        // Imprimir nueva línea
-        secante.printLine(resultados);
+        // Imprimir hasta que el error sea suficiente para finalizar
+        while (secante.calcularError()) {
+            double[] resultados = secante.nextCalc();
+            secante.printLine(resultados);
+        }
     }
 
 
