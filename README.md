@@ -6,4 +6,4 @@ El programa contiene:
 - Métodos calculados con una tabla fácil de entender y visualmente bonita.
 - Manejo de excepciones.
 
-Ya me pueden contratar de programador en Google creo,
+Ya me pueden contratar de programador en Google creo.
