@@ -60,7 +60,7 @@ public class BigMethod {
 
                 case 10:
                     // Caso de salir
-                    System.out.println("matate pues cffff");
+                    System.out.println("Adiós :\"v");
                     break;
             
                 default:
