@@ -35,9 +35,15 @@ public class BigMatrix {
         System.out.println("=================================================================");
 
         // Variable matriz de tamaño orden
-        double [][] matriz = new double[orden][orden];
+        double [][] matriz = {
+            {20, 10, 9, 9, 125*100},
+            {8, 18, 6, 14, 136*100},
+            {8, 8, 9, 24, 133*100},
+            {8, 8, 16, 12, 144*100}
+        };
 
         // Pedir todas las variables
+        /*double [][] matriz = new double[orden][orden];
         for (int i = 0; i <= orden-1; i++) {
             System.out.println("ECUACIÓN #" + (i + 1));
 
@@ -48,7 +54,7 @@ public class BigMatrix {
                 // Insertamos el valor dado en la matriz
                 matriz[i][ii] = valor;
             }
-        }
+        }*/
 
         // SECCIÓN 3: MENÚ ----------------------------------------------------
 
@@ -63,8 +69,12 @@ public class BigMatrix {
 
             switch (opcion) {
                 case 1:
-                    // GAUSS-JORDAN -------------------------------------------
+                    // GAUSS-JORDAN ---------------------------------------------------------------
+                    System.out.println("=================================================================");
+                    System.out.println("                          GAUSS JORDAN");
 
+                    // Hacer ceros abajo de la diagonal
+                    int k = orden
                     break;
 
                 case 2:
@@ -107,5 +117,19 @@ public class BigMatrix {
         System.out.println("[1] Método de Gauss Jordan");
         System.out.println("[2] Método de Gauss Seidel");
         System.out.println("[10] F I N\n");
+    }
+
+    public static void imprimirMatriz(double [][] matriz) {
+        for (int i = 0; i < orden; i++) {
+            for (int j = 0; j < orden+1; j++) {
+                System.out.print(matriz[i][j]);
+
+                if (j != orden) {
+                    System.out.print(", ");
+                }
+            }
+
+            System.out.println();
+        }
     }
 }
