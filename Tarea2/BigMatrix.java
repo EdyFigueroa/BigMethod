@@ -28,7 +28,7 @@ public class BigMatrix {
 
         // Pedir el concepto
         System.out.print("- Concepto: > ");
-        pregunta = sc.next();
+        concepto = sc.next();
 
         // SECCIÓN 2: PEDIR TODA LA MATRIZ ------------------------------------
 
@@ -74,7 +74,51 @@ public class BigMatrix {
                     System.out.println("                          GAUSS JORDAN");
 
                     // Hacer ceros abajo de la diagonal
-                    int k = orden
+                    for (int k = 0; k < orden; k++) {
+                        double pivote = matriz[k][k];
+                        for (int f = k+1; f < orden; f++) {
+                            double ecero = matriz[f][k];
+                            for (int c = 0; c < orden+1; c++) {
+                                matriz[f][c] = (pivote * matriz[f][c]) - (ecero * matriz[k][c]);
+                            }
+                        }
+                    }
+
+                    // Hacer ceros arriba de la diagonal
+                    for (int k = orden-1; k >= 0; k--) {
+                        double pivote = matriz[k][k];
+                        for (int f = k-1; f >= 0; f--) {
+                            double ecero = matriz[f][k];
+                            for (int c = 0; c < orden+1; c++) {
+                                matriz[f][c] = (pivote * matriz[f][c]) - (ecero * matriz[k][c]);
+                            }
+                        }
+                    }
+
+                    // Hacer 1 la diagonal
+                    for (int k = 0; k < orden; k++) {
+                        double pivote = matriz[k][k];
+                        for (int c = 0; c < orden+1; c++) {
+                            matriz[k][c] = matriz[k][c] / pivote;
+                        }
+                    }
+
+                    // Imprimir la matriz resultante
+                    imprimirMatriz(matriz);
+
+                    // Imprimir la solución
+                    System.out.println("La solución es:");
+                    for (int i = 0; i < orden; i++) {
+                        System.out.println("x" + (i + 1) + " = " + matriz[i][orden] + " " + concepto);
+                    }
+
+                    // Esperar a que el usuario presione enter para continuar
+                    System.out.print("\n- Presione [ENTER] para continuar... ");
+                    sc.nextLine(); sc.nextLine();
+
+                    // Imprimir el menú
+                    System.out.println("=================================================================");
+                    imprimirMenu();
                     break;
 
                 case 2:
@@ -121,15 +165,12 @@ public class BigMatrix {
 
     public static void imprimirMatriz(double [][] matriz) {
         for (int i = 0; i < orden; i++) {
-            for (int j = 0; j < orden+1; j++) {
-                System.out.print(matriz[i][j]);
-
-                if (j != orden) {
-                    System.out.print(", ");
-                }
+            System.out.print("| ");
+            for (int j = 0; j < orden + 1; j++) {
+                System.out.printf("%10.2f ", matriz[i][j]); // Formato para alinear los números
             }
-
-            System.out.println();
+            System.out.println("|");
         }
+        System.out.println();
     }
 }
