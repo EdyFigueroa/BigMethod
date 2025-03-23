@@ -1,8 +1,10 @@
+import java.text.DecimalFormat;
 import java.util.Scanner;
 
 public class BigMatrix {
     static Scanner sc = new Scanner(System.in);
 
+    // Aquí almacenaremos los datos del problema
     static String pregunta;
     static int orden = 0;
     static String concepto;
@@ -13,7 +15,7 @@ public class BigMatrix {
         // SECCIÓN 1: PEDIR DATOS ---------------------------------------------
 
         // Pedir la pregunta
-        System.out.print("- Pregunta: > ");
+        /*System.out.print("- Pregunta: > ");
         pregunta = sc.next();
 
         // Pedir el orden + validarlo del 2 al 10
@@ -28,7 +30,9 @@ public class BigMatrix {
 
         // Pedir el concepto
         System.out.print("- Concepto: > ");
-        concepto = sc.next();
+        concepto = sc.next();*/
+
+        orden = 4;
 
         // SECCIÓN 2: PEDIR TODA LA MATRIZ ------------------------------------
 
@@ -42,13 +46,21 @@ public class BigMatrix {
             {8, 8, 16, 12, 144*100}
         };
 
+        String [] nombresVariables = {
+            "Peces hacha", "Peces gato", "Peces mono", "Peces lagarto"
+        };
+
         // Pedir todas las variables
-        /*double [][] matriz = new double[orden][orden];
+        /*double [][] matriz = new double[orden][orden+1];
         for (int i = 0; i <= orden-1; i++) {
             System.out.println("ECUACIÓN #" + (i + 1));
 
-            for (int ii = 0; ii <= orden-1; ii++) {
-                System.out.print("  > x" + (ii + 1) + " = ");
+            for (int ii = 0; ii <= orden; ii++) {
+                if (ii == orden) {
+                    System.out.print("  > Resultado = ");
+                } else {
+                    System.out.print("  > x" + (ii + 1) + " = ");
+                }
                 double valor = sc.nextDouble();
 
                 // Insertamos el valor dado en la matriz
@@ -64,7 +76,7 @@ public class BigMatrix {
         imprimirMenu();
         System.out.print("- Teclee su opción: > ");
 
-        do {
+        do { // Comienza ciclo del menú
             opcion = sc.nextInt();
 
             switch (opcion) {
@@ -72,6 +84,10 @@ public class BigMatrix {
                     // GAUSS-JORDAN ---------------------------------------------------------------
                     System.out.println("=================================================================");
                     System.out.println("                          GAUSS JORDAN");
+
+                    // Imprimir matriz original
+                    System.out.println("1. Matriz de datos:");
+                    imprimirMatriz(matriz, nombresVariables);
 
                     // Hacer ceros abajo de la diagonal
                     for (int k = 0; k < orden; k++) {
@@ -84,6 +100,10 @@ public class BigMatrix {
                         }
                     }
 
+                    // Imprimir la matriz con ceros abajo de la diagonal
+                    System.out.println("2. Matriz con ceros abajo de la diagonal:");
+                    imprimirMatriz(matriz, nombresVariables);
+
                     // Hacer ceros arriba de la diagonal
                     for (int k = orden-1; k >= 0; k--) {
                         double pivote = matriz[k][k];
@@ -95,6 +115,10 @@ public class BigMatrix {
                         }
                     }
 
+                    // Imprimir la matriz con ceros arriba de la diagonal
+                    System.out.println("3. Matriz con ceros abajo y arriba de la diagonal:");
+                    imprimirMatriz(matriz, nombresVariables);
+
                     // Hacer 1 la diagonal
                     for (int k = 0; k < orden; k++) {
                         double pivote = matriz[k][k];
@@ -104,12 +128,13 @@ public class BigMatrix {
                     }
 
                     // Imprimir la matriz resultante
-                    imprimirMatriz(matriz);
+                    System.out.println("4. Matriz identidad:");
+                    imprimirMatriz(matriz, nombresVariables);
 
                     // Imprimir la solución
                     System.out.println("La solución es:");
                     for (int i = 0; i < orden; i++) {
-                        System.out.println("x" + (i + 1) + " = " + matriz[i][orden] + " " + concepto);
+                        System.out.println("x" + (i + 1) + " = " + matriz[i][orden] + " " + nombresVariables[i]);
                     }
 
                     // Esperar a que el usuario presione enter para continuar
@@ -163,14 +188,83 @@ public class BigMatrix {
         System.out.println("[10] F I N\n");
     }
 
-    public static void imprimirMatriz(double [][] matriz) {
-        for (int i = 0; i < orden; i++) {
-            System.out.print("| ");
-            for (int j = 0; j < orden + 1; j++) {
-                System.out.printf("%10.2f ", matriz[i][j]); // Formato para alinear los números
-            }
-            System.out.println("|");
+    public static void imprimirMatriz(double [][] matriz, String [] conceptos) {
+        int variables = matriz[0].length;
+        
+        // Añadimos un concepto más a conceptos[]: Resultados
+        String [] conceptos2 = new String[variables];
+        for (int i = 0; i < conceptos.length; i++) {
+            conceptos2[i] = conceptos[i];
         }
-        System.out.println();
+        conceptos2[variables-1] = "Resultados";
+    
+        // Imprimir primero el encabezado que se acomode al número de variables
+        String str = "┌";
+        for (int i = 0; i < variables; i++) {
+            for (int ii = 0; ii < Math.max(conceptos2[i].length(), 10); ii++) {
+                str += "─"; // Imprimir tantos guiones como letras tenga la variable
+            }
+    
+            // Imprimir el separador de columnas, dependiendo si es la última columna o no
+            if (i != variables-1) str += "┬";
+            else str += "┐\n";
+        }
+    
+        // Imprimir el nombre de todas las variables
+        for (int i = 0; i < variables; i++) {
+            str += String.format("│%10s", conceptos2[i]);
+        }
+        str += "│\n";
+    
+        // Imprimir el separador de columnas
+        str += "├";
+        for (int i = 0; i < variables; i++) {
+            for (int ii = 0; ii < Math.max(conceptos2[i].length(), 10); ii++) {
+                str += "─"; // Imprimir tantos guiones como letras tenga la variable
+            }
+    
+            // Imprimir el separador de columnas, dependiendo si es la última columna o no
+            if (i != variables-1) str += "┼";
+            else str += "┤\n";
+        }
+    
+        // AHORA SÍ, IMPRIMIR EL CONTENIDO DE LA MATRIZ
+        for (int i = 0; i < matriz.length; i++) {
+            for (int ii = 0; ii < variables; ii++) {
+                String format = "│%" + Math.max(conceptos2[ii].length(), 10) + "s";
+                str += String.format(format, formatNumber(matriz[i][ii], 10));
+            }
+            str += "│\n";
+        }
+    
+        // Imprimir el pie de la tabla
+        str += "└";
+        for (int i = 0; i < variables; i++) {
+            for (int ii = 0; ii < Math.max(conceptos2[i].length(), 10); ii++) {
+                str += "─"; // Imprimir tantos guiones como letras tenga la variable
+            }
+    
+            // Imprimir el separador de columnas, dependiendo si es la última columna o no
+            if (i != variables-1) str += "┴";
+            else str += "┘\n";
+        }
+    
+        System.out.println(str);
+    }
+
+    public static String formatNumber(double numero, int caracteres) {
+        if (numero == 0.0) {
+            numero = 0.0; // Evita que por alguna razón se escriba -0 en vez de 0 XD
+        }
+        DecimalFormat df = new DecimalFormat("0.#########"); // Evita notación científica
+        String s = df.format(numero); // Convierte el número a string
+
+        if (s.length() < caracteres) {
+            s = String.format("%" + caracteres + "s", s); // Rellena con espacios a la izquierda
+        } else if (s.length() > caracteres) {
+            s = s.substring(0, caracteres); // Trunca si es demasiado largo
+        }
+
+        return s; 
     }
 }
