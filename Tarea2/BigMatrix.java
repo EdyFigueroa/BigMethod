@@ -168,7 +168,7 @@ public class BigMatrix {
 
                     double [] x = {50, 50, 50, 50};
                     double error = 0.000001;
-                    int calculos = 50;
+                    int calculos = 10;
 
                     // Imprimir cabecera de la tabla
                     String str = "┌──┬";
@@ -201,7 +201,7 @@ public class BigMatrix {
                         else str += "┤\n";
                     }
 
-                    // AHORA SÍ COMENZAR LAS ITERACIONES
+                    // AHORA SÍ COMENZAR LAS ITERACIONES --------------------------
                     for (int i = 0; i < calculos; i++) {
                         // Escribir el número para cada variable
                         str += String.format("│%2d", i+1);
@@ -213,14 +213,28 @@ public class BigMatrix {
                         double errorTotal = 0;
                         for (int ii = 0; ii < orden; ii++) {
                             errorTotal += Math.abs(x[ii]);
+                            System.out.print(Math.abs(x[ii]));
                         }
 
                         // Escribir el error total
                         str += String.format("│%15s", formatNumber(errorTotal, 15));
                         str += "│\n";
 
-                        // Calcular los nuevos valores de x
-                        
+                        // For para recorrer todas las ecuaciones
+                        for (int c = 0; c < orden; c++) {
+                            // Evaluamos el nuevo valor de la variable con la variable despejada
+                            x[c] = matriz[c][orden];
+
+                            // For para recorrer todas las variables
+                            for (int cc = 0; cc < orden; cc++) {
+                                if (cc != c) {
+                                    x[c] -= matriz[c][cc] * x[cc];
+                                }
+                            }
+
+                            // Dividimos entre el valor de la variable
+                            x[c] /= matriz[c][c];
+                        }
                     }
 
                     System.out.println(str);
