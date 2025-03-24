@@ -166,9 +166,11 @@ public class BigMatrix {
                     System.out.print(" > Número de cálculos = ");
                     int calculos = sc.nextInt();*/
 
-                    double [] x = {50, 50, 50, 50};
-                    double error = 0.000001;
-                    int calculos = 10;
+                    double [] vAnt = {50, 50, 50, 50};
+                    double [] vAct = {0, 0, 0, 0};
+                    double errorTotal = 0;
+                    double errorPermitido = 1;
+                    int calculosPermitidos = 50;
 
                     // Imprimir cabecera de la tabla
                     String str = "┌──┬";
@@ -201,43 +203,91 @@ public class BigMatrix {
                         else str += "┤\n";
                     }
 
-                    // AHORA SÍ COMENZAR LAS ITERACIONES --------------------------
-                    for (int i = 0; i < calculos; i++) {
-                        // Escribir el número para cada variable
-                        str += String.format("│%2d", i+1);
-                        for (int ii = 0; ii < orden; ii++) {
-                            str += String.format("│%15s", formatNumber(x[ii], 15));
-                        }
+                    // Imprimir los valores iniciales
+                    str += "│ 0";
+                    for (int i = 0; i < orden; i++) {
+                        str += String.format("│%15s", formatNumber(vAnt[i], 15)); 
+                    }
+                    double _suma = 0;
+                    for (int i = 0; i < orden; i++) {
+                        _suma += vAnt[i];
+                    }
+                    str += String.format("│%15s", formatNumber(_suma, 15));
+                    str += "│\n";
 
-                        // Calcular el error total
-                        double errorTotal = 0;
-                        for (int ii = 0; ii < orden; ii++) {
-                            errorTotal += Math.abs(x[ii]);
-                            System.out.print(Math.abs(x[ii]));
-                        }
+                    // AHORA SÍ COMENZAR LAS ITERACIONES --------------------------------------------------------------
+                    int calculosHechos = 0;
+                    do {
 
-                        // Escribir el error total
-                        str += String.format("│%15s", formatNumber(errorTotal, 15));
-                        str += "│\n";
+                        calculosHechos++;
 
-                        // For para recorrer todas las ecuaciones
-                        for (int c = 0; c < orden; c++) {
-                            // Evaluamos el nuevo valor de la variable con la variable despejada
-                            x[c] = matriz[c][orden];
+                        // 1. Imprimir el número de iteración
+                        str += String.format("│%2d", calculosHechos);
 
-                            // For para recorrer todas las variables
-                            for (int cc = 0; cc < orden; cc++) {
-                                if (cc != c) {
-                                    x[c] -= matriz[c][cc] * x[cc];
-                                }
+                        for (int f = 0; f < orden; f++) {
+                            // Valores iniciales antes de las iteraciones
+                            double suma = 0;
+                            double coef = matriz[f][f];
+                            suma += matriz[f][orden];
+
+                            for (int c = 0; c < orden; c++) {
+                                if (c != f) {
+                                    if (c < f) {
+                                       suma += (matriz[f][c] * -1.0) * vAct[c]; 
+                                    } else {
+                                        suma += (matriz[f][c] * -1.0) * vAnt[c];
+                                    }
+                                } 
                             }
 
-                            // Dividimos entre el valor de la variable
-                            x[c] /= matriz[c][c];
+                            suma = suma / coef;
+                            vAct[f] = suma;
                         }
+
+                        // Calculamos ahora el error total
+                        errorTotal = 0;
+                        for (int p = 0; p < orden; p++) {
+                            errorTotal += Math.abs(Math.abs(vAct[p]) - Math.abs(vAnt[p]));
+                        }
+
+                        // Una vez que se han hecho todos los cálculos, imprimimos la tabla
+                        for (int p = 0; p < orden; p++) {
+                            str += String.format("│%15s", formatNumber(vAct[p], 15));
+                            vAnt[p] = vAct[p];
+                        }
+                        str += String.format("│%15s", formatNumber(errorTotal, 15));
+                        str += "│\n";
+                    } while (calculosHechos <= calculosPermitidos && errorTotal > errorPermitido);
+
+                    // Imprimir el pie de la tabla
+                    str += "└──┴";
+                    for (int i = 0; i < orden+1; i++) {
+                        for (int ii = 0; ii < 15; ii++) {
+                            str += "─"; // Imprimir tantos guiones como letras tenga la variable
+                        }  
+
+                        // Imprimir el separador de columnas, dependiendo si es la última columna o no
+                        if (i!= orden) str += "┴";
+                        else str += "┘\n";
                     }
 
+                    // IMPRIMIMOS TODA LA TABLA
                     System.out.println(str);
+
+                    
+
+                    // Imprimimos un mensaje si se alcanzó el máximo de iteraciones
+                    if (calculosHechos > calculosPermitidos) {
+                            System.out.println("Se alcanzó el máximo de cálculos permitidos.");
+                            System.out.println("La solución a la que mejor se aproximó es:");
+                    } else {
+                        System.out.println("La solución es:"); 
+                    }
+
+                    // Imprimimos la solución
+                    for (int i = 0; i < orden; i++) {
+                        System.out.println("x" + (i + 1) + " = " + vAct[i] + " " + nombresVariables[i]);
+                    }
 
                     break;
 
