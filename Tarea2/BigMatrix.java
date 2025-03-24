@@ -77,6 +77,7 @@ public class BigMatrix {
         System.out.print("- Teclee su opción: > ");
 
         do { // Comienza ciclo del menú
+
             opcion = sc.nextInt();
 
             switch (opcion) {
@@ -274,8 +275,6 @@ public class BigMatrix {
                     // IMPRIMIMOS TODA LA TABLA
                     System.out.println(str);
 
-                    
-
                     // Imprimimos un mensaje si se alcanzó el máximo de iteraciones
                     if (calculosHechos > calculosPermitidos) {
                             System.out.println("Se alcanzó el máximo de cálculos permitidos.");
@@ -289,6 +288,13 @@ public class BigMatrix {
                         System.out.println("x" + (i + 1) + " = " + vAct[i] + " " + nombresVariables[i]);
                     }
 
+                    // Esperar a que el usuario presione enter para continuar
+                    System.out.print("\n- Presione [ENTER] para continuar... ");
+                    sc.nextLine(); sc.nextLine();
+
+                    // Imprimir el menú
+                    System.out.println("=================================================================");
+                    imprimirMenu();
                     break;
 
                 case 10:
