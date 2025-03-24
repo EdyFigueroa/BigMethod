@@ -1,13 +1,21 @@
-import java.text.DecimalFormat;
-import java.util.Scanner;
+import java.text.DecimalFormat; // Lo uso para formatear los números
+import java.util.Scanner; // Lo uso para leer datos del usuario
+
+// CLASE PRINCIPAL -----------------------------------------------------------
+
+/**
+ * Tengo que admitir que este programa es muy confuso,
+ * trataré de facilitar la revisión marcando los puntos claves del programa con macatextos
+ */
 
 public class BigMatrix {
     static Scanner sc = new Scanner(System.in);
 
     // Aquí almacenaremos los datos del problema
-    static String pregunta;
-    static int orden = 0;
-    static String concepto;
+    static String pregunta; // Pregunta del problema
+    static int orden = 0; // Orden de la matriz
+    static String unidades; // Unidades que maneja el problema
+    static String [] conceptos; // Conceptos de las variables
 
     public static void main(String [] args) {
         pantallaDeInicio(); // Imprimir pantalla de inicio
@@ -15,8 +23,8 @@ public class BigMatrix {
         // SECCIÓN 1: PEDIR DATOS ---------------------------------------------
 
         // Pedir la pregunta
-        /*System.out.print("- Pregunta: > ");
-        pregunta = sc.next();
+        System.out.print("- Pregunta: > ");
+        pregunta = sc.nextLine();
 
         // Pedir el orden + validarlo del 2 al 10
         do {
@@ -28,45 +36,34 @@ public class BigMatrix {
             }
         } while (orden < 2 || orden > 10);
 
-        // Pedir el concepto
-        System.out.print("- Concepto: > ");
-        concepto = sc.next();*/
+        // Una vez ya con el orden, inicializamos el arreglo de conceptos
+        conceptos = new String[orden+1];
 
-        orden = 4;
+        // Pedir las unidades
+        System.out.print("- Unidades: > ");
+        unidades = sc.next();
 
         // SECCIÓN 2: PEDIR TODA LA MATRIZ ------------------------------------
 
         System.out.println("=================================================================");
 
-        // Variable matriz de tamaño orden
-        double [][] matriz = {
-            {20, 10, 9, 9, 125*100},
-            {8, 18, 6, 14, 136*100},
-            {8, 8, 16, 12, 144*100},
-            {8, 8, 9, 24, 133*100}
-        };
-
-        String [] nombresVariables = {
-            "Peces hacha", "Peces gato", "Peces mono", "Peces lagarto"
-        };
-
         // Pedir todas las variables
-        /*double [][] matriz = new double[orden][orden+1];
-        for (int i = 0; i <= orden-1; i++) {
+        double [][] matriz = new double[orden][orden+1]; // Creamos la matriz
+        for (int i = 0; i < orden; i++) { // Iterar sobre las filas (ecuaciones)
             System.out.println("ECUACIÓN #" + (i + 1));
 
-            for (int ii = 0; ii <= orden; ii++) {
-                if (ii == orden) {
-                    System.out.print("  > Resultado = ");
-                } else {
-                    System.out.print("  > x" + (ii + 1) + " = ");
-                }
-                double valor = sc.nextDouble();
-
-                // Insertamos el valor dado en la matriz
-                matriz[i][ii] = valor;
+            for (int ii = 0; ii <= orden; ii++) { // Iterar sobre las columnas
+                // Leer el valor de la columna o del resultado dependiendo si es la última columna o no
+                System.out.print(ii == orden ? "  > Resultado = " : "  > x" + (ii + 1) + " = ");
+                matriz[i][ii] = sc.nextDouble();
             }
-        }*/
+
+            System.out.print("  > Concepto = ");
+            conceptos[i] = sc.next(); sc.next();
+        }
+
+        // Añadir la columna resultado
+        conceptos[orden] = "Resultado";
 
         // SECCIÓN 3: MENÚ ----------------------------------------------------
 
@@ -77,65 +74,78 @@ public class BigMatrix {
         System.out.print("- Teclee su opción: > ");
 
         do { // Comienza ciclo del menú
-
-            opcion = sc.nextInt();
+            opcion = sc.nextInt(); // Leer la opción del usuario
 
             switch (opcion) {
                 case 1:
                     // GAUSS-JORDAN ---------------------------------------------------------------
                     System.out.println("=================================================================");
-                    System.out.println("                          GAUSS JORDAN");
+                    System.out.println("GAUSS JORDAN");
+
+                    // Imprimir la pregunta
+                    System.out.println(pregunta + "\n");
+
+                    // Creamos una copia de la matriz original para no modificarla en el proceso
+                    // y para poder seguirla utilizando en los otros métodos.
+                    double[][] _matriz = new double[orden][orden + 1];
+                    for (int i = 0; i < orden; i++) {
+                        System.arraycopy(matriz[i], 0, _matriz[i], 0, orden + 1);
+                    }
 
                     // Imprimir matriz original
                     System.out.println("1. Matriz de datos:");
-                    imprimirMatriz(matriz, nombresVariables);
+                    imprimirMatriz(_matriz, conceptos);
 
                     // Hacer ceros abajo de la diagonal
-                    for (int k = 0; k < orden; k++) {
-                        double pivote = matriz[k][k];
-                        for (int f = k+1; f < orden; f++) {
-                            double ecero = matriz[f][k];
-                            for (int c = 0; c < orden+1; c++) {
-                                matriz[f][c] = (pivote * matriz[f][c]) - (ecero * matriz[k][c]);
+                    for (int k = 0; k < orden; k++) { // Iterar sobre las filas
+                        double pivote = _matriz[k][k]; // El pivote es el valor de la diagonal
+                        for (int f = k+1; f < orden; f++) { // Iterar sobre las filas debajo de la diagonal
+                            double ecero = _matriz[f][k]; // El valor de la columna
+                            for (int c = 0; c < orden+1; c++) { // Iterar sobre las columnas
+                                // Multiplicamos el valor de la columna por el pivote
+                                // y le restamos el valor de la columna de la fila actual
+                                _matriz[f][c] = (pivote * _matriz[f][c]) - (ecero * _matriz[k][c]);
                             }
                         }
                     }
 
                     // Imprimir la matriz con ceros abajo de la diagonal
                     System.out.println("2. Matriz con ceros abajo de la diagonal:");
-                    imprimirMatriz(matriz, nombresVariables);
+                    imprimirMatriz(_matriz, conceptos);
 
                     // Hacer ceros arriba de la diagonal
-                    for (int k = orden-1; k >= 0; k--) {
-                        double pivote = matriz[k][k];
-                        for (int f = k-1; f >= 0; f--) {
-                            double factor = matriz[f][k] / pivote;
+                    for (int k = orden-1; k >= 0; k--) { // Iterar sobre las filas
+                        double pivote = _matriz[k][k]; // El pivote es el valor de la diagonal
+                        for (int f = k-1; f >= 0; f--) { // Iterar sobre las filas arriba de la diagonal
+                            double factor = _matriz[f][k] / pivote; // El factor es el valor de la columna dividido por el pivote
                             for (int c = 0; c < orden+1; c++) {
-                                matriz[f][c] = matriz[f][c] - (factor * matriz[k][c]);
+                                // Restamos el valor de la columna por el valor de la columna de la fila actual
+                                _matriz[f][c] -= (factor * _matriz[k][c]);
                             }
                         }
                     }
 
                     // Imprimir la matriz con ceros arriba de la diagonal
                     System.out.println("3. Matriz con ceros abajo y arriba de la diagonal:");
-                    imprimirMatriz(matriz, nombresVariables);
+                    imprimirMatriz(_matriz, conceptos);
 
                     // Hacer 1 la diagonal
-                    for (int k = 0; k < orden; k++) {
-                        double pivote = matriz[k][k];
-                        for (int c = 0; c < orden+1; c++) {
-                            matriz[k][c] = matriz[k][c] / pivote;
+                    for (int k = 0; k < orden; k++) { // Iterar sobre las filas
+                        double pivote = _matriz[k][k]; // El pivote es el valor de la diagonal
+                        for (int c = 0; c < orden+1; c++) { // Iterar sobre las columnas
+                            // Dividimos el valor de la columna por el pivote
+                            _matriz[k][c] = _matriz[k][c] / pivote;
                         }
                     }
 
                     // Imprimir la matriz resultante
                     System.out.println("4. Matriz identidad:");
-                    imprimirMatriz(matriz, nombresVariables);
+                    imprimirMatriz(_matriz, conceptos);
 
                     // Imprimir la solución
                     System.out.println("La solución es:");
                     for (int i = 0; i < orden; i++) {
-                        System.out.println("x" + (i + 1) + " = " + matriz[i][orden] + " " + nombresVariables[i]);
+                        System.out.printf("%15s = %.0f %s\n", conceptos[i], _matriz[i][orden], unidades);
                     }
 
                     // Esperar a que el usuario presione enter para continuar
@@ -145,40 +155,37 @@ public class BigMatrix {
                     // Imprimir el menú
                     System.out.println("=================================================================");
                     imprimirMenu();
+                    System.out.print("- Teclee su opción: > ");
                     break;
 
                 case 2:
                     // GAUSS-SEIDEL ---------------------------------------------------------------
                     System.out.println("=================================================================");
-                    System.out.println("                          GAUSS SEIDEL");
+                    System.out.println("GAUSS SEIDEL");
+                    System.out.println(pregunta + "\n");
 
                     // Pedir datos iniciales
-                    /*double [] x = new double[orden];
+                    double [] vAnt = new double[orden];
+                    double [] vAct = new double[orden];
                     for (int i = 0; i < orden; i++) {
                         System.out.print(" > x" + (i + 1) + " = ");
-                        x[i] = sc.nextDouble();
+                        vAnt[i] = sc.nextDouble();
+                        vAct[i] = 0;
                     }
 
                     // Pedir el error
                     System.out.print(" > Error = ");
-                    double error = sc.nextDouble();
+                    double errorPermitido = sc.nextDouble();
+                    double errorTotal = 0;
 
                     // Pedir el número de iteraciones
                     System.out.print(" > Número de cálculos = ");
-                    int calculos = sc.nextInt();*/
-
-                    double [] vAnt = {50, 50, 50, 50};
-                    double [] vAct = {0, 0, 0, 0};
-                    double errorTotal = 0;
-                    double errorPermitido = 1;
-                    int calculosPermitidos = 50;
+                    int calculosPermitidos = sc.nextInt();
 
                     // Imprimir cabecera de la tabla
                     String str = "┌──┬";
                     for (int i = 0; i < orden+1; i++) {
-                        for (int ii = 0; ii < 15; ii++) {
-                            str += "─"; // Imprimir tantos guiones como letras tenga la variable
-                        }
+                        str += "───────────────";
 
                         // Imprimir el separador de columnas, dependiendo si es la última columna o no
                         if (i != orden) str += "┬";
@@ -188,16 +195,14 @@ public class BigMatrix {
                     // Imprimir el nombre de todas las variables
                     str += "│N°";
                     for (int i = 0; i < orden; i++) {
-                        str += String.format("│%15s", nombresVariables[i]);
+                        str += String.format("│%15s", conceptos[i]);
                     }
                     str += "│    Error Total│\n";
 
                     // Imprimir el separador de columnas
                     str += "├──┼";
                     for (int i = 0; i < orden+1; i++) {
-                        for (int ii = 0; ii < 15; ii++) {
-                            str += "─"; // Imprimir tantos guiones como letras tenga la variable
-                        }
+                        str += "───────────────";
 
                         // Imprimir el separador de columnas, dependiendo si es la última columna o no
                         if (i != orden) str += "┼";
@@ -219,53 +224,54 @@ public class BigMatrix {
                     // AHORA SÍ COMENZAR LAS ITERACIONES --------------------------------------------------------------
                     int calculosHechos = 0;
                     do {
+                        calculosHechos++; // Incrementar el número de iteraciones
+                        str += String.format("│%2d", calculosHechos); // Imprimir el número de iteraciones
 
-                        calculosHechos++;
-
-                        // 1. Imprimir el número de iteración
-                        str += String.format("│%2d", calculosHechos);
-
-                        for (int f = 0; f < orden; f++) {
+                        // CALCULAR LOS NUEVOS VALORES
+                        for (int f = 0; f < orden; f++) { // Iterar sobre las filas
                             // Valores iniciales antes de las iteraciones
                             double suma = 0;
                             double coef = matriz[f][f];
                             suma += matriz[f][orden];
 
-                            for (int c = 0; c < orden; c++) {
-                                if (c != f) {
-                                    if (c < f) {
+                            for (int c = 0; c < orden; c++) { // Iterar sobre las columnas
+                                if (c != f) { // Si no es la diagonal
+                                    if (c < f) { // Si es una columna anterior a la diagonal
+                                       // Suma += coeficiente * valor actual
                                        suma += (matriz[f][c] * -1.0) * vAct[c]; 
                                     } else {
+                                        // Suma += coeficiente * valor anterior
                                         suma += (matriz[f][c] * -1.0) * vAnt[c];
                                     }
                                 } 
                             }
 
-                            suma = suma / coef;
-                            vAct[f] = suma;
+                            suma = suma / coef; // Dividimos la suma por el coeficiente
+                            vAct[f] = suma; // Guardamos los valores actuales
                         }
 
-                        // Calculamos ahora el error total
+                        // CALCULAR EL ERROR TOTAL
                         errorTotal = 0;
-                        for (int p = 0; p < orden; p++) {
+                        for (int p = 0; p < orden; p++) { // Iterar sobre las filas
+                            // Error total += valor actual - valor anterior
                             errorTotal += Math.abs(Math.abs(vAct[p]) - Math.abs(vAnt[p]));
                         }
 
                         // Una vez que se han hecho todos los cálculos, imprimimos la tabla
                         for (int p = 0; p < orden; p++) {
                             str += String.format("│%15s", formatNumber(vAct[p], 15));
-                            vAnt[p] = vAct[p];
+                            vAnt[p] = vAct[p]; // Guardamos los valores actuales en los anteriores
                         }
                         str += String.format("│%15s", formatNumber(errorTotal, 15));
                         str += "│\n";
+                    
+                    // Esto se hará mientras los cálculos sean menores que los permitidos y el error sea mayor al permitido
                     } while (calculosHechos <= calculosPermitidos && errorTotal > errorPermitido);
 
                     // Imprimir el pie de la tabla
                     str += "└──┴";
                     for (int i = 0; i < orden+1; i++) {
-                        for (int ii = 0; ii < 15; ii++) {
-                            str += "─"; // Imprimir tantos guiones como letras tenga la variable
-                        }  
+                        str += "───────────────";
 
                         // Imprimir el separador de columnas, dependiendo si es la última columna o no
                         if (i!= orden) str += "┴";
@@ -277,15 +283,13 @@ public class BigMatrix {
 
                     // Imprimimos un mensaje si se alcanzó el máximo de iteraciones
                     if (calculosHechos > calculosPermitidos) {
-                            System.out.println("Se alcanzó el máximo de cálculos permitidos.");
-                            System.out.println("La solución a la que mejor se aproximó es:");
-                    } else {
-                        System.out.println("La solución es:"); 
+                        System.out.println("Se alcanzó el máximo de cálculos permitidos.");
                     }
 
                     // Imprimimos la solución
+                    System.out.println("La solución aproximada es:");
                     for (int i = 0; i < orden; i++) {
-                        System.out.println("x" + (i + 1) + " = " + vAct[i] + " " + nombresVariables[i]);
+                        System.out.printf("%15s = %.5f %s\n", conceptos[i], vAct[i], unidades);
                     }
 
                     // Esperar a que el usuario presione enter para continuar
@@ -295,6 +299,7 @@ public class BigMatrix {
                     // Imprimir el menú
                     System.out.println("=================================================================");
                     imprimirMenu();
+                    System.out.print("- Teclee su opción: > ");
                     break;
 
                 case 10:
@@ -338,20 +343,11 @@ public class BigMatrix {
     public static void imprimirMatriz(double [][] matriz, String [] conceptos) {
         int variables = matriz[0].length;
         int trunque = 15;
-        
-        // Añadimos un concepto más a conceptos[]: Resultados
-        String [] conceptos2 = new String[variables];
-        for (int i = 0; i < conceptos.length; i++) {
-            conceptos2[i] = conceptos[i];
-        }
-        conceptos2[variables-1] = "Resultado";
     
         // Imprimir primero el encabezado que se acomode al número de variables
         String str = "┌";
         for (int i = 0; i < variables; i++) {
-            for (int ii = 0; ii < Math.max(conceptos2[i].length(), trunque); ii++) {
-                str += "─"; // Imprimir tantos guiones como letras tenga la variable
-            }
+            str += "───────────────";
     
             // Imprimir el separador de columnas, dependiendo si es la última columna o no
             if (i != variables-1) str += "┬";
@@ -360,16 +356,14 @@ public class BigMatrix {
     
         // Imprimir el nombre de todas las variables
         for (int i = 0; i < variables; i++) {
-            str += String.format("│%15s", conceptos2[i]);
+            str += String.format("│%15s", conceptos[i]);
         }
         str += "│\n";
     
         // Imprimir el separador de columnas
         str += "├";
         for (int i = 0; i < variables; i++) {
-            for (int ii = 0; ii < Math.max(conceptos2[i].length(), trunque); ii++) {
-                str += "─"; // Imprimir tantos guiones como letras tenga la variable
-            }
+            str += "───────────────";
     
             // Imprimir el separador de columnas, dependiendo si es la última columna o no
             if (i != variables-1) str += "┼";
@@ -379,7 +373,7 @@ public class BigMatrix {
         // AHORA SÍ, IMPRIMIR EL CONTENIDO DE LA MATRIZ
         for (int i = 0; i < matriz.length; i++) {
             for (int ii = 0; ii < variables; ii++) {
-                String format = "│%" + Math.max(conceptos2[ii].length(), trunque) + "s";
+                String format = "│%" + Math.max(conceptos[ii].length(), trunque) + "s";
                 str += String.format(format, formatNumber(matriz[i][ii], trunque));
             }
             str += "│\n";
@@ -388,9 +382,7 @@ public class BigMatrix {
         // Imprimir el pie de la tabla
         str += "└";
         for (int i = 0; i < variables; i++) {
-            for (int ii = 0; ii < Math.max(conceptos2[i].length(), trunque); ii++) {
-                str += "─"; // Imprimir tantos guiones como letras tenga la variable
-            }
+            str += "───────────────";
     
             // Imprimir el separador de columnas, dependiendo si es la última columna o no
             if (i != variables-1) str += "┴";
