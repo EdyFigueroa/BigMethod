@@ -9,7 +9,7 @@ public class BigIntegral {
 
     // Atributos
     static String pregunta; // Se almacena la pregunta
-    static String unidades; // TODO: Pedir unidades
+    static String unidades; // Las unidades de medida
     static double valorReal; // Almacenna el valor real para saber cuándo acabar el método
     static double limInferior; // Límite inferior
     static double limSuperior; // Límite superior
@@ -21,28 +21,14 @@ public class BigIntegral {
         pantallaDeInicio();
 
         // Pedir datos ----------------------------------------------------
-        /*System.out.print("- Pregunta: > ");
-        pregunta = sc.nextLine();
-
-        System.out.print("- Límite inferior: > ");
-        limInferior = sc.nextInt();
-
-        System.out.print("- Límite superior: > ");
-        limSuperior = sc.nextInt();
-
-        System.out.print("- Número de trapecios: > ");
-        trapecios = sc.nextInt();*/
-
-        // TODO: Quitar esto al final
-        pregunta = "¿Cuál será el crecimiento poblacional durante el mes de junio al mes de septiembre\r\n" + //
-                "del año?";
-        valorReal = 244.37;
-        limInferior = 5;
-        limSuperior = 9;
-        trapecios = 3;
-        maxCalculos = 20;
-        error = 0.001;
-        unidades = "u^2";
+        System.out.print("- Pregunta: > "); pregunta = sc.nextLine();
+        System.out.print("- Máximo de cálculos: > "); maxCalculos = sc.nextInt();
+        System.out.print("- Límite inferior: > "); limInferior = sc.nextInt();
+        System.out.print("- Límite superior: > "); limSuperior = sc.nextInt();
+        System.out.print("- Valor real: > "); valorReal = sc.nextDouble();
+        System.out.print("- Unidades: > "); sc.nextLine(); unidades = sc.nextLine();
+        System.out.print("- Número de trapecios iniciales: > "); trapecios = sc.nextInt();
+        System.out.print("- Error permitido: > "); error = sc.nextDouble();
 
         // Imprimir cabecera de la tabla
         System.out.println("=================================================================");
@@ -132,8 +118,8 @@ public class BigIntegral {
         System.out.printf("Número inicial de trapecios: %d\n", trapecios);
         System.out.printf("Número final de trapecios: %d\n", trapeciosIteracion);
         System.out.printf("Número de procesos: %d\n", calculos);
-        System.out.printf("Valor real de la integral: %f\n", valorReal);
-        System.out.printf("Valor calculado por trapecios: %f\n", areaTotal);
+        System.out.printf("Valor real de la integral: %f %s\n", valorReal, unidades);
+        System.out.printf("Valor calculado por trapecios: %f %s\n", areaTotal, unidades);
         System.out.printf("Error del problema: %f\n", error);
         System.out.printf("Error del método: %f\n", errorCalculado);
 
