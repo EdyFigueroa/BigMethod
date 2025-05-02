@@ -116,7 +116,7 @@ public class BigIntegral {
 
         System.out.println("-------------------------------------------------------");
         System.out.printf("Número inicial de trapecios: %d\n", trapecios);
-        System.out.printf("Número final de trapecios: %d\n", trapeciosIteracion);
+        System.out.printf("Número final de trapecios: %d\n", trapeciosIteracion/2);
         System.out.printf("Número de procesos: %d\n", calculos);
         System.out.printf("Valor real de la integral: %f %s\n", valorReal, unidades);
         System.out.printf("Valor calculado por trapecios: %f %s\n", areaTotal, unidades);
